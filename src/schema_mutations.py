@@ -16,13 +16,6 @@ class PersonInput(graphene.InputObjectType):
     dateOfDeath = graphene.Date(required=False, default_value=None)
 
 
-class MovieInput(graphene.InputObjectType):
-    firstName = graphene.String(required=True)
-    lastName = graphene.String(required=True)
-    dateOfBirth = graphene.Date(required=True)
-    dateOfDeath = graphene.Date(required=False, default_value=None)
-
-
 class CreatePerson(graphene.Mutation):
     class Arguments:
         person_data = PersonInput(required=True)
@@ -43,3 +36,36 @@ class CreatePerson(graphene.Mutation):
         session.add(newPerson)
         session.commit()
         return CreatePerson(person=newPerson)
+
+
+class MovieInput(graphene.InputObjectType):
+    frenchTitle = graphene.String(required=True)
+    originalTitle = graphene.String(required=True)
+    status = graphene.String(required=True)
+    statusDate = graphene.Date(required=True)
+
+
+class CreateMovie(graphene.Mutation):
+    class Arguments:
+        movie_data = MovieInput(required=True)
+
+    movie = graphene.Field(MovieType)
+
+    def mutate(root: object, info: graphene.ResolveInfo, movie_data=None):
+        session = info.context["session"]
+
+        newMovie = models.Movie()
+        newMovie.frenchTitle = movie_data.frenchTitle
+        newMovie.originalTitle = movie_data.originalTitle
+        # Recherche correspondance ID status
+        for movieStatus in session.query(models.MovieStatus):
+            if movieStatus.description == movie_data.status:
+                newMovie.statusId = movieStatus.id
+                break
+        if not newMovie.statusId:
+            raise RuntimeError
+
+        # Ajout en base
+        session.add(newMovie)
+        session.commit()
+        return CreateMovie(movie=newMovie)
