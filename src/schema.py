@@ -6,10 +6,11 @@ import graphene
 
 from models import Movie, MoviePersons, Person
 from schema_types import MovieType, PersonType
+from schema_mutations import CreatePerson
 
 
 class Query(graphene.ObjectType):
-    """Query, objet principal GraphQL.
+    """Query, objet principal pour les requêtes GraphQL.
 
     Attributes:
         person (graphene.Field): Champ permettant l'accès à une personne
@@ -115,8 +116,15 @@ class Query(graphene.ObjectType):
         ]
 
 
+class Mutations(graphene.ObjectType):
+    """Mutations, objet principal pour les mutations GraphQL.
+    """
+    create_person = CreatePerson.Field()
+
+
 schema = graphene.Schema(
     query=Query,
+    mutation=Mutations,
     types=[
         PersonType,
         MovieType,
