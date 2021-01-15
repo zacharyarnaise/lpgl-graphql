@@ -4,7 +4,7 @@ Zachary Arnaise
 
 from sqlalchemy import Column, Date, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import UniqueConstraint, relation
+from sqlalchemy.orm import relation
 
 Base = declarative_base()
 
@@ -19,14 +19,15 @@ class Person(Base):
     dateOfBirth = Column(Date, nullable=False)
     dateOfDeath = Column(Date)
 
+    career = relation("MoviePersons", back_populates="person")
+
 
 class PersonRole(Base):
-    """Représente les rôles qu'une personne peut avoir (acteur, réalisateur, ...)."""
+    """Représente les rôles qu'une personne peut avoir (acteur, ...)."""
 
     __tablename__ = "person_roles"
     id = Column(Integer, primary_key=True)
     description = Column(String, nullable=False)
-    movie_persons = relation("MoviePersons", back_populate="PersonRole")
 
 
 class MoviePersons(Base):
@@ -34,17 +35,13 @@ class MoviePersons(Base):
 
     __tablename__ = "movie_persons"
     id = Column(Integer, primary_key=True)
+    movie_id = Column(Integer, ForeignKey("movie.id"), primary_key=True)
+    person_id = Column(Integer, ForeignKey("person.id"), primary_key=True)
+    person_role_id = Column(Integer, ForeignKey("person_roles.id"), nullable=False)
 
-    movie = relation("Movie", back_populates="MoviePersons")
-    movieId = Column(Integer, ForeignKey("movie.id"), nullable=False)
-
-    person = relation("Person")
-    personId = Column(Integer, ForeignKey("device.id"), nullable=False)
-
-    role = relation("PersonRole", back_populates="MoviePersons")
-    roleId = Column(Integer, ForeignKey("person_roles.id"), nullable=False)
-
-    __table_args__ = (UniqueConstraint(movieId, personId, roleId),)
+    movie = relation("Movie", back_populates="crew")
+    person = relation("Person", back_populates="career")
+    role = relation("PersonRole")
 
 
 class MovieStatus(Base):
@@ -65,4 +62,4 @@ class Movie(Base):
     statusId = Column(Integer, ForeignKey("movie_status.id"), nullable=False)
     status = relation("MovieStatus", foreign_keys=statusId)
     statusDate = Column(Date)
-    movie_persons = relation("MoviePersons", back_populate="Movie")
+    crew = relation("MoviePersons", back_populates="movie")
