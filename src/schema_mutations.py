@@ -16,6 +16,13 @@ class PersonInput(graphene.InputObjectType):
     dateOfDeath = graphene.Date(required=False, default_value=None)
 
 
+class MovieInput(graphene.InputObjectType):
+    firstName = graphene.String(required=True)
+    lastName = graphene.String(required=True)
+    dateOfBirth = graphene.Date(required=True)
+    dateOfDeath = graphene.Date(required=False, default_value=None)
+
+
 class CreatePerson(graphene.Mutation):
     class Arguments:
         person_data = PersonInput(required=True)

@@ -6,7 +6,7 @@ import graphene
 
 from models import Movie, MoviePersons, Person
 from schema_types import MovieType, PersonType
-from schema_mutations import CreatePerson
+from schema_mutations import CreatePerson, CreateMovie
 
 
 class Query(graphene.ObjectType):
@@ -120,6 +120,7 @@ class Mutations(graphene.ObjectType):
     """Mutations, objet principal pour les mutations GraphQL.
     """
     create_person = CreatePerson.Field()
+    create_movie = CreateMovie.Field()
 
 
 schema = graphene.Schema(
