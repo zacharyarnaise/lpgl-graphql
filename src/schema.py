@@ -5,7 +5,7 @@ Zachary Arnaise
 import graphene
 
 from models import Movie, MoviePersons, Person
-from schema_types import MovieType, PersonType
+from schema_types import MovieType, PersonType, SearchResult
 from schema_mutations import CreatePerson, CreateMovie
 
 
@@ -26,6 +26,7 @@ class Query(graphene.ObjectType):
         joué dans un film.
         songWriters (graphene.List): Liste de toutes les personnes ayant au
         moins composé la musique d'un film.
+        search (graphene.List): Liste de champs pour la fonction de recherche.
     """
 
     person = graphene.Field(
@@ -114,6 +115,21 @@ class Query(graphene.ObjectType):
             .group_by(MoviePersons.person_id)
             .all()
         ]
+
+    search = graphene.List(SearchResult, q=graphene.String())
+
+    def resolve_search(root: object, info: graphene.ResolveInfo, **kwargs):
+        # Requête de recherche
+        q = kwargs.get("q")
+
+        # Recherche d'une personne
+        personsQuery = PersonType.get_query(info)
+        persons = personsQuery.filter(Person.firstName.contains(q) | Person.lastName.contains(q)).all()
+        # Recherche d'un film
+        moviesQuery = MovieType.get_query(info)
+        movies = moviesQuery.filter(Movie.frenchTitle.contains(q) | Movie.originalTitle.contains(q)).all()
+
+        return persons + movies
 
 
 class Mutations(graphene.ObjectType):

@@ -105,3 +105,8 @@ class MovieType(SQLAlchemyObjectType):
             for assoc in parent.crew
             if assoc.role.description == "compositeur"
         ]
+
+
+class SearchResult(graphene.Union):
+    class Meta:
+        types = (PersonType, MovieType)
