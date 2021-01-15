@@ -5,8 +5,8 @@ Zachary Arnaise
 import graphene
 
 from models import Movie, MoviePersons, Person
+from schema_mutations import CreateMovie, CreatePerson
 from schema_types import MovieType, PersonType, SearchResult
-from schema_mutations import CreatePerson, CreateMovie
 
 
 class Query(graphene.ObjectType):
@@ -124,17 +124,21 @@ class Query(graphene.ObjectType):
 
         # Recherche d'une personne
         personsQuery = PersonType.get_query(info)
-        persons = personsQuery.filter(Person.firstName.contains(q) | Person.lastName.contains(q)).all()
+        persons = personsQuery.filter(
+            Person.firstName.contains(q) | Person.lastName.contains(q)
+        ).all()
         # Recherche d'un film
         moviesQuery = MovieType.get_query(info)
-        movies = moviesQuery.filter(Movie.frenchTitle.contains(q) | Movie.originalTitle.contains(q)).all()
+        movies = moviesQuery.filter(
+            Movie.frenchTitle.contains(q) | Movie.originalTitle.contains(q)
+        ).all()
 
         return persons + movies
 
 
 class Mutations(graphene.ObjectType):
-    """Mutations, objet principal pour les mutations GraphQL.
-    """
+    """Mutations, objet principal pour les mutations GraphQL."""
+
     create_person = CreatePerson.Field()
     create_movie = CreateMovie.Field()
 

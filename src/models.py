@@ -37,7 +37,9 @@ class MoviePersons(Base):
     id = Column(Integer, primary_key=True)
     movie_id = Column(Integer, ForeignKey("movie.id"), primary_key=True)
     person_id = Column(Integer, ForeignKey("person.id"), primary_key=True)
-    person_role_id = Column(Integer, ForeignKey("person_roles.id"), nullable=False)
+    person_role_id = Column(
+        Integer, ForeignKey("person_roles.id"), nullable=False
+    )
 
     movie = relation("Movie", back_populates="crew")
     person = relation("Person", back_populates="career")

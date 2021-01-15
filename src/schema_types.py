@@ -44,7 +44,9 @@ class PersonType(SQLAlchemyObjectType):
 
     def resolve_playedIn(parent: object, info: graphene.ResolveInfo):
         return [
-            assoc.movie for assoc in parent.career if assoc.role.description == "acteur"
+            assoc.movie
+            for assoc in parent.career
+            if assoc.role.description == "acteur"
         ]
 
     def resolve_composed(parent: object, info: graphene.ResolveInfo):
@@ -96,7 +98,9 @@ class MovieType(SQLAlchemyObjectType):
 
     def resolve_actors(parent: object, info: graphene.ResolveInfo):
         return [
-            assoc.person for assoc in parent.crew if assoc.role.description == "acteur"
+            assoc.person
+            for assoc in parent.crew
+            if assoc.role.description == "acteur"
         ]
 
     def resolve_songWriters(parent: object, info: graphene.ResolveInfo):
