@@ -143,9 +143,25 @@ class Mutations(graphene.ObjectType):
     create_movie = CreateMovie.Field()
 
 
+class Subscription(graphene.ObjectType):
+    """Subscription permettant de voir les nouveau film ajoutés."""
+
+    new_movie = graphene.Field(MovieType)
+
+    def resolve_new_movie(root: object, info: graphene.ResolveInfo):
+        import ipdb
+
+        ipdb.set_trace()
+        return root.filter(
+            lambda event: event.operation == CREATED
+            and isinstance(event.instance, MovieType)
+        ).map(lambda event: event.instance)
+
+
 schema = graphene.Schema(
     query=Query,
     mutation=Mutations,
+    subscription=Subscription,
     types=[
         PersonType,
         MovieType,
