@@ -2,14 +2,14 @@
 Zachary Arnaise
 """
 
-import sys
 import os.path
+import sys
+
 import falcon
 import sqlalchemy.orm
 
 from resources import ResourceGraphQL
 from schema import schema
-
 
 if not os.path.isfile("/db/movies.db"):
     print("ERREUR: Accès à la db SQLite impossible, aucun fichier trouvé.")
