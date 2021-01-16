@@ -9,7 +9,7 @@ from resources import ResourceGraphQL
 from schema import schema
 
 # Init ORM
-engine = sqlalchemy.create_engine("sqlite:///../movies.db", echo=True)
+engine = sqlalchemy.create_engine("sqlite:////db/movies.db", echo=True)
 sessionmaker = sqlalchemy.orm.sessionmaker(bind=engine)
 scoped_session = sqlalchemy.orm.scoped_session(sessionmaker)
 
